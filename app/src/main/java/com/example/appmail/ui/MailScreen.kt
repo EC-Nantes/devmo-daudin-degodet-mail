@@ -40,15 +40,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.appmail.R
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.ViewModel
 import com.example.appmail.ui.theme.AppMailTheme
 
 
 
+
+//préférence et réglage (passage en paysage avec un bouton de suivi/favoris)
 @Composable
-fun MailScreen(mailViewModel:MailViewModel=viewModel()) {
+fun MailScreen(
+    mailViewModel: MailViewModel = viewModel()
+) {
     val mediumPadding = dimensionResource(R.dimen.padding_medium)
-    val gameUiState by mailViewModel.uiState.collectAsState()
+    val mailUiState by mailViewModel.uiState.collectAsState()
+
     Column(
         modifier = Modifier
             .statusBarsPadding()
@@ -95,10 +101,10 @@ fun MailScreen(mailViewModel:MailViewModel=viewModel()) {
             }
         }
 
-        MailStatus(objet = MailUiState.mailObject,
-            expeditor= MailUiState.mailExpeditor,
-            category= MailUiState.mailCategory,
-            content=MailUiState.mailContent,
+        MailStatus(objet = mailUiState.mailObject,
+            expeditor= mailUiState.mailExpeditor,
+            category= mailUiState.mailCategory,
+            content=mailUiState.mailContent,
             modifier = Modifier.padding(20.dp)
         )
     }
@@ -133,13 +139,7 @@ fun MailStatus(objet: String, expeditor: String, category:String, content:String
 }
 
 @Composable
-fun GameLayout(
-    onUserGuessChanged: (String) -> Unit,
-    onKeyboardDone:() -> Unit,
-    wordCount:Int,
-    currentScrambledWord : String,
-    userGuess:String,
-    isGuessWrong: Boolean,
+fun MailLayout(
     modifier: Modifier = Modifier
 ) {
     val mediumPadding = dimensionResource(R.dimen.padding_medium)
@@ -159,47 +159,20 @@ fun GameLayout(
                     .background(colorScheme.surfaceTint)
                     .padding(horizontal = 10.dp, vertical = 4.dp)
                     .align(alignment = Alignment.End),
-                text = stringResource(R.string.word_count, wordCount),
+                text = "A modifier dans MailScreen",
                 style = typography.titleMedium,
                 color = colorScheme.onPrimary
             )
             Text(
-                text = currentScrambledWord,
-                fontSize=45.sp,
+                modifier = modifier.align(Alignment.CenterHorizontally),
+                text = "A modifier Dans MailScreen",
+                fontSize = 45.sp,
                 style = typography.displayMedium
-                        modifier=modifier.align(Alignment.CenterHorizontally)
             )
             Text(
-                text = stringResource(R.string.instructions),
+                text = "A modifier Dans MailScreen",
                 textAlign = TextAlign.Center,
                 style = typography.titleMedium
-            )
-            OutlinedTextField(
-                value = userGuess,
-                singleLine = true,
-                shape = shapes.large,
-                modifier = Modifier.fillMaxWidth(),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = colorScheme.surface,
-                    unfocusedContainerColor = colorScheme.surface,
-                    disabledContainerColor = colorScheme.surface,
-                ),
-                onValueChange = onUserGuessChanged,
-                label = {
-                    if(isGuessWrong){
-                        Text(stringResource(R.string.wrong_guess))
-                    }
-                    else{
-                        Text(stringResource(R.string.enter_your_word))
-                    }
-                },
-                isError = isGuessWrong,
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = { onKeyboardDone()}
-                )
             )
         }
     }
@@ -211,5 +184,4 @@ fun MailScreenPreview() {
     AppMailTheme {
         MailScreen()
     }
-}
 }
