@@ -4,6 +4,7 @@ data class MailUiState(
     val mailObject:String="",
     val mailContent:String="",
     val mailExpeditor:String="",
+    val mailReceiver:String="",
     val mailCategory:String="",
 ) {
 }
