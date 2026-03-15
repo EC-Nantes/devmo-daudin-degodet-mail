@@ -6,5 +6,7 @@ data class MailUiState(
     val mailExpeditor:String="",
     val mailReceiver:String="",
     val mailCategory:String="",
+
+    val mailFollowed: Boolean=false,
 ) {
 }

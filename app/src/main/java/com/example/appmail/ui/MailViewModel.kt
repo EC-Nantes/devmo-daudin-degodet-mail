@@ -5,22 +5,23 @@ import com.example.appmail.data.mailData
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlin.String
 
 class MailViewModel: ViewModel() {
     private val _uiState = MutableStateFlow(MailUiState())
     val uiState: StateFlow<MailUiState> = _uiState.asStateFlow()
-    lateinit var mailUiState : MailUiState
     lateinit var currentMail: List<String>
 
     fun pickRandomMail(){
         currentMail = mailData.random()
-        mailUiState = MailUiState(
+        _uiState.value = MailUiState(
             mailObject =currentMail[2],
             mailContent =currentMail[4],
             mailExpeditor = currentMail[0],
             mailReceiver = currentMail[1],
             mailCategory = currentMail[3],
+            mailFollowed = false,
         )
     }
 
@@ -28,4 +29,11 @@ class MailViewModel: ViewModel() {
     pickRandomMail()
     }
 
+    fun updateFollow(valueMailFollowed:Boolean){
+        _uiState.update{
+            currentState->currentState.copy(
+                mailFollowed=!valueMailFollowed
+            )
+        }
+    }
 }
