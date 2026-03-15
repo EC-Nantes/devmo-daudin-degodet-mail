@@ -16,11 +16,11 @@ class MailViewModel: ViewModel() {
     fun pickRandomMail(){
         currentMail = mailData.random()
         mailUiState = MailUiState(
-            mailObject =currentMail[3],
-            mailContent =currentMail[5],
-            mailExpeditor = currentMail[1],
-            mailReceiver = currentMail[2],
-            mailCategory = currentMail[4],
+            mailObject =currentMail[2],
+            mailContent =currentMail[4],
+            mailExpeditor = currentMail[0],
+            mailReceiver = currentMail[1],
+            mailCategory = currentMail[3],
         )
     }
 
