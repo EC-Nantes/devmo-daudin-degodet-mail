@@ -1,16 +1,19 @@
 package com.example.appmail.ui
 
 import android.app.Activity
+import android.text.BoringLayout
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -20,10 +23,12 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -45,6 +50,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
@@ -61,74 +67,70 @@ import com.example.appmail.ui.theme.AppMailTheme
 
 
 
+//à faire pour les maquettes : préférence et réglage
+//et pour le code : passage en paysage avec un bouton de suivi/favoris qui doit rester dans son état
 
-//préférence et réglage (passage en paysage avec un bouton de suivi/favoris)
-@OptIn(ExperimentalMaterial3Api::class)
+
+@Composable
+fun MailLayout(
+    objet: String,
+    expeditor: String,
+    category : String,
+    receiver: String,
+    mailFollowed: Boolean,
+    content: String,
+    modifier: Modifier = Modifier
+)
+{
+    Box(
+        modifier= Modifier
+            .verticalScroll(rememberScrollState())
+    ){
+    TopRow(
+        modifier = modifier,
+        mailCategory = category
+    )
+
+    ObjectRow(
+        modifier = modifier,
+        mailObject = objet,
+        mailFollowed = mailFollowed
+    )
+
+
+    Spacer(
+        modifier = Modifier
+            .height(16.dp)
+    )
+
+    InfoRow(
+        modifier = modifier,
+        expeditor = expeditor,
+        receiver = receiver
+    )
+
+    ContentRow(
+        modifier = modifier,
+        content = content
+    )
+
+
+
+    IARow(
+        modifier = modifier
+    )}
+}
+
 @Composable
 fun MailScreen(
     mailViewModel: MailViewModel = viewModel()
-) {
+)
+{
     val mediumPadding = dimensionResource(R.dimen.padding_medium)
     val mailUiState by mailViewModel.uiState.collectAsState()
 
 
-    TopAppBar(
-        modifier=Modifier
-            .fillMaxWidth(),
-        title={
-            Text(
-                text = stringResource(R.string.category, mailUiState.mailCategory),
-                style = typography.headlineSmall,
-                modifier = Modifier.padding(8.dp)
-            )
-        },
-        actions ={
-            Button(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 8.dp),
-                onClick = { }
-            ) {
-                Text(
-                    text = stringResource(R.string.submit),
-                    fontSize = 16.sp
-                )
-            }
-            Button(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 8.dp),
-                onClick = { }
-            ) {
-                Text(
-                    text = stringResource(R.string.submit),
-                    fontSize = 16.sp
-                )
-            }
-            Button(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 8.dp),
-                onClick = { }
-            ) {
-                Text(
-                    text = stringResource(R.string.submit),
-                    fontSize = 16.sp
-                )
-            }
-            Button(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 8.dp),
-                onClick = { }
-            ) {
-                Text(
-                    text = stringResource(R.string.submit),
-                    fontSize = 16.sp
-                )
-            }
-        }
-    )
+
 
     Spacer(
         modifier = Modifier
@@ -144,144 +146,262 @@ fun MailScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-            Button(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 8.dp),
-                onClick = { }
-            ) {
-                Text(
-                    text = stringResource(R.string.submit),
-                    fontSize = 16.sp
-                )
-            }
 
 
-            Button(
-                onClick = {},
-                modifier = Modifier
-            ) {
-                Text(
-                    text = stringResource(R.string.skip),
-                    fontSize = 16.sp
-                )
-            }
-        }
-        MailStatus(objet = mailUiState.mailObject,
-            expeditor= mailUiState.mailExpeditor,
-            receiver = mailUiState.mailReceiver,
-            content=mailUiState.mailContent,
-            modifier = Modifier.padding(20.dp)
-        )
+
     }
+    MailLayout(objet = mailUiState.mailObject,
+        expeditor= mailUiState.mailExpeditor,
+        receiver = mailUiState.mailReceiver,
+        content=mailUiState.mailContent,
+        mailFollowed = mailUiState.mailFollowed,
+        category = mailUiState.mailCategory,
+        modifier = Modifier.padding(20.dp)
+    )
+}
 
-
-    @Composable
-    fun MailStatus(
-        objet: String,
-        expeditor: String,
-        receiver: String,
-        content: String,
-        modifier: Modifier = Modifier
-    ) {
-        Row(
-            modifier = modifier
-        ) {
-            TextField(
-                label = { Text(stringResource(R.string.objet))},
-                value = stringResource(R.string.objet, objet),
-                //style = typography.headlineMedium,
-                //modifier = Modifier.padding(24.dp),
-                trailingIcon = { androidx.compose.material3.Icon(imageVector = Icons.Default.Star, contentDescription = "faire suivre") },
-                onValueChange = {//TODO
-                     }
-                )
-        }
-
-        Spacer(
-            modifier = Modifier
-                .height(16.dp)
-        )
-
-        Box(
-            modifier=modifier
-        ){
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    ,//.padding(mediumPadding),
-                //verticalArrangement = Arrangement.spacedBy(mediumPadding),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ){
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Text(stringResource(R.string.expeditor, expeditor))
-                    Spacer(modifier.width(8.dp))
-                    Text(stringResource(R.string.receiver, receiver))
-                    Spacer(Modifier.weight(1f))
-
-
-
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(imageVector = Icons.Default.Build, contentDescription = "répondre")
-                        Icon(imageVector = Icons.Default.Build, contentDescription = "Signaler comme spam")
-                        Icon(imageVector = Icons.Default.Build, contentDescription = "transférer")
-                        Icon(imageVector = Icons.Default.MoreVert, contentDescription = "plus d'action")
-                    }
-                }
-
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+fun TopRow(
+    modifier:Modifier,
+    mailCategory: String,
+){
+    val buttonSize = 45.dp
+    TopAppBar(
+        modifier=Modifier
+            .fillMaxWidth(),
+        title={
             Text(
-                text = stringResource(R.string.expeditor, expeditor),
+                text = stringResource(R.string.category, mailCategory),
                 style = typography.headlineSmall,
                 modifier = Modifier.padding(8.dp)
             )
-
+        },
+        actions ={
+            Button(
+                modifier = Modifier
+                    .size(buttonSize)
+                    .padding(start = 8.dp),
+                onClick = { }
+            ) {
+                (Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "à faire")
+                        )
+            }
             Text(
-                text = content,
-                style = typography.headlineMedium,
-                modifier = Modifier.padding(8.dp)
-            )}
+                text = stringResource(R.string.category, mailCategory),
+                style = typography.bodyMedium,
+                modifier = Modifier
+                    .padding(8.dp)
+                    .weight(1f)
+            )
+            Button(
+                modifier = Modifier
+                    .size(buttonSize)
+                    .padding(start = 8.dp),
+                onClick = { }
+            ) {
+                (Icon(
+                    imageVector = Icons.Default.Build,
+                    contentDescription = "à faire")
+                        )
+            }
+            Button(
+                modifier = Modifier
+                    .size(buttonSize)
+                    .padding(start = 8.dp),
+                onClick = { }
+            ) {
+                (Icon(
+                    imageVector = Icons.Default.Build,
+                    contentDescription = "à faire")
+                        )
+            }
+            Button(
+                modifier = Modifier
+                    .size(buttonSize)
+                    .padding(start = 8.dp),
+                onClick = { }
+            ) {
+                (Icon(
+                    imageVector = Icons.Default.Build,
+                    contentDescription = "à faire")
+                        )
+            }
+            Button(
+                modifier = Modifier
+                    .size(buttonSize)
+                    .padding(start = 8.dp),
+                onClick = { }
+            ) {
+                (Icon(
+                    imageVector = Icons.Default.Build,
+                    contentDescription = "à faire")
+                        )
+            }
+            Button(
+                modifier = Modifier
+                    .size(buttonSize)
+                    .padding(start = 8.dp),
+                onClick = { }
+            ) {
+                (Icon(
+                    imageVector = Icons.Default.MoreVert,
+                    contentDescription = "à faire")
+                        )
+            }
         }
-    }
+    )
+}
 
-    @Composable
-    fun MailLayout(
-        modifier: Modifier = Modifier
-    ) {
-        val mediumPadding = dimensionResource(R.dimen.padding_medium)
+
+@Composable
+fun ObjectRow(
+    modifier:Modifier,
+    mailObject : String,
+    mailFollowed: Boolean
+){
 
         Card(
-            modifier = modifier,
-            elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(vertical = 60.dp),
+            ){
+            Row(
+            modifier = modifier
+                .fillMaxWidth(),
+            verticalAlignment=Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+
         ) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(mediumPadding),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(mediumPadding)
+        Text(
+            text = stringResource(R.string.objet, mailObject),
+            //style = typography.headlineMedium,
+            modifier = Modifier
+                .weight(1f)
+                //.padding(top = 45.dp)
+                )
+
+            Button(
+                modifier = Modifier,
+                onClick = { }
             ) {
-                Text(
-                    modifier = Modifier
-                        .clip(shapes.medium)
-                        .background(colorScheme.surfaceTint)
-                        .padding(horizontal = 10.dp, vertical = 4.dp)
-                        .align(alignment = Alignment.End),
-                    text = "A modifier dans MailScreen",
-                    style = typography.titleMedium,
-                    color = colorScheme.onPrimary
-                )
-                Text(
-                    modifier = modifier.align(Alignment.CenterHorizontally),
-                    text = "A modifier Dans MailScreen",
-                    fontSize = 45.sp,
-                    style = typography.displayMedium
-                )
-                Text(
-                    text = "A modifier Dans MailScreen",
-                    textAlign = TextAlign.Center,
-                    style = typography.titleMedium
-                )
+                if (mailFollowed){
+                Icon(
+                    imageVector =Icons.Filled.Star,
+                    contentDescription = "arreter de suivre"
+                )}
+                else {
+                    Icon(
+                        imageVector = Icons.Outlined.Star,
+                        contentDescription = "faire suivre"
+                    )
+
+            }}
+
+    }}
+}
+@Composable
+fun InfoRow(
+    modifier:Modifier,
+    expeditor:String,
+    receiver: String
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(top = 160.dp)
+    )
+    {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth(),//.padding(mediumPadding),
+            //verticalArrangement = Arrangement.spacedBy(mediumPadding),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            Row(modifier = Modifier.fillMaxWidth())
+            {
+                Icon(imageVector = Icons.Default.AccountCircle, contentDescription = "répondre")
+                Text(stringResource(R.string.expeditor, expeditor))
+                Spacer(modifier.width(8.dp))
+                Text(stringResource(R.string.receiver, receiver))
+                Spacer(Modifier.weight(1f))
+
+
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(imageVector = Icons.Default.Build, contentDescription = "répondre")
+                    Icon(
+                        imageVector = Icons.Default.Build,
+                        contentDescription = "Signaler comme spam"
+                    )
+                    Icon(imageVector = Icons.Default.Build, contentDescription = "transférer")
+                    Icon(imageVector = Icons.Default.MoreVert, contentDescription = "plus d'action")
+                }
             }
         }
     }
+}
+@Composable
+fun ContentRow(
+    modifier:Modifier,
+    content:String
+){
+    Text(
+        text = content,
+        style = typography.headlineMedium,
+        modifier = Modifier
+            .padding(top=230.dp, bottom=40.dp)
+    )}
+
+
+@Composable
+fun IARow(
+    modifier:Modifier,
+){
+    Box(modifier=Modifier
+        .fillMaxWidth(),
+        contentAlignment = Alignment.BottomCenter
+    )
+    {
+        Row(
+            modifier = Modifier
+            .padding(bottom = 4.dp)
+            .fillMaxWidth(),
+        horizontalArrangement=Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically
+){
+    Button(
+        modifier = Modifier
+                ,
+        onClick = { }
+    ) {
+        (Icon(
+            imageVector = Icons.Default.Build,
+            contentDescription = "à faire")
+                )
+        Text(
+            text= "résumé"
+        )
+    }
+    Button(
+        modifier = Modifier
+            ,
+        onClick = { }
+    ) {
+        (Icon(
+            imageVector = Icons.Default.Build,
+            contentDescription = "à faire")
+                )
+        Text(
+            text= "répondre"
+        )
+    }
+}}
+}
+
 
     @Preview(showBackground = true)
     @Composable
