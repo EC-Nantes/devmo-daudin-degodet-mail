@@ -1,5 +1,6 @@
 package com.example.appmail.ui
 
+import android.R.attr.bottom
 import android.app.Activity
 import android.text.BoringLayout
 import androidx.compose.foundation.background
@@ -362,7 +363,8 @@ fun IARow(
     modifier:Modifier,
 ){
     Box(modifier=Modifier
-        .fillMaxWidth(),
+        .fillMaxWidth()
+        .padding(bottom = 4.dp),
         contentAlignment = Alignment.BottomCenter
     )
     {
