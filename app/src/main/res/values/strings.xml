@@ -3,8 +3,8 @@
     <string name="submit">Valider</string>
     <string name="skip">Passer</string>
     <string name="delete">Supprimer</string>
-    <string name="objet">Objet</string>
-    <string name="expeditor">Expéditeur</string>
-    <string name="category">Catégorie</string>
-    <string name="receiver">Destinataire</string>
+    <string name="objet">Objet: </string>
+    <string name="expeditor">Exp: \n</string>
+    <string name="category">Catégorie: </string>
+    <string name="receiver">Dest: \n</string>
 </resources>

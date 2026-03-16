@@ -1,6 +1,5 @@
 package com.example.appmail.ui
 
-import android.R.attr.bottom
 import android.app.Activity
 import android.text.BoringLayout
 import androidx.compose.foundation.background
@@ -80,22 +79,24 @@ fun MailLayout(
     receiver: String,
     mailFollowed: Boolean,
     content: String,
+    mailViewModel: MailViewModel,
     modifier: Modifier = Modifier
 )
 {
-    Box(
-        modifier= Modifier
-            .verticalScroll(rememberScrollState())
-    ){
+
     TopRow(
         modifier = modifier,
         mailCategory = category
     )
-
+    Box(
+        modifier= Modifier
+            .verticalScroll(rememberScrollState())
+    ){
     ObjectRow(
         modifier = modifier,
         mailObject = objet,
-        mailFollowed = mailFollowed
+        mailFollowed = mailFollowed,
+        mailViewModel = mailViewModel
     )
 
 
@@ -131,14 +132,12 @@ fun MailScreen(
     val mailUiState by mailViewModel.uiState.collectAsState()
 
 
-
-
     Spacer(
         modifier = Modifier
             .height(8.dp)
     )
 
-    Column(
+    /*Column(
         modifier = Modifier
             .statusBarsPadding()
             .verticalScroll(rememberScrollState())
@@ -150,13 +149,14 @@ fun MailScreen(
 
 
 
-    }
+    }*/
     MailLayout(objet = mailUiState.mailObject,
         expeditor= mailUiState.mailExpeditor,
         receiver = mailUiState.mailReceiver,
         content=mailUiState.mailContent,
         mailFollowed = mailUiState.mailFollowed,
         category = mailUiState.mailCategory,
+        mailViewModel=mailViewModel,
         modifier = Modifier.padding(20.dp)
     )
 }
@@ -191,7 +191,7 @@ fun TopRow(
                         )
             }
             Text(
-                text = stringResource(R.string.category, mailCategory),
+                text =mailCategory,
                 style = typography.bodyMedium,
                 modifier = Modifier
                     .padding(8.dp)
@@ -261,7 +261,8 @@ fun TopRow(
 fun ObjectRow(
     modifier:Modifier,
     mailObject : String,
-    mailFollowed: Boolean
+    mailFollowed: Boolean,
+    mailViewModel: MailViewModel
 ){
 
         Card(
@@ -277,7 +278,7 @@ fun ObjectRow(
 
         ) {
         Text(
-            text = stringResource(R.string.objet, mailObject),
+            text = stringResource(R.string.objet)+ mailObject,
             //style = typography.headlineMedium,
             modifier = Modifier
                 .weight(1f)
@@ -286,7 +287,7 @@ fun ObjectRow(
 
             Button(
                 modifier = Modifier,
-                onClick = { }
+                onClick = { mailViewModel.updateFollow(mailFollowed)}
             ) {
                 if (mailFollowed){
                 Icon(
@@ -325,9 +326,9 @@ fun InfoRow(
             Row(modifier = Modifier.fillMaxWidth())
             {
                 Icon(imageVector = Icons.Default.AccountCircle, contentDescription = "répondre")
-                Text(stringResource(R.string.expeditor, expeditor))
-                Spacer(modifier.width(8.dp))
-                Text(stringResource(R.string.receiver, receiver))
+                Text(stringResource(R.string.expeditor)+expeditor)
+                Spacer(modifier.width(1.dp))
+                Text(stringResource(R.string.receiver)+receiver)
                 Spacer(Modifier.weight(1f))
 
 
@@ -363,14 +364,13 @@ fun IARow(
     modifier:Modifier,
 ){
     Box(modifier=Modifier
-        .fillMaxWidth()
-        .padding(bottom = 4.dp),
+        .fillMaxSize()
+        .padding(bottom=4.dp),
         contentAlignment = Alignment.BottomCenter
     )
     {
         Row(
             modifier = Modifier
-            .padding(bottom = 4.dp)
             .fillMaxWidth(),
         horizontalArrangement=Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
