@@ -3,6 +3,7 @@ package com.example.appmail.ui
 import android.app.Activity
 import android.text.BoringLayout
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -85,12 +86,13 @@ fun MailLayout(
 {
 
     TopRow(
-        modifier = modifier,
+        modifier = modifier.verticalScroll(rememberScrollState()),
         mailCategory = category
     )
     Box(
         modifier= Modifier
             .verticalScroll(rememberScrollState())
+            .fillMaxSize()
     ){
     ObjectRow(
         modifier = modifier,
@@ -119,7 +121,7 @@ fun MailLayout(
 
 
     IARow(
-        modifier = modifier
+        modifier = modifier.align(Alignment.BottomCenter)
     )}
 }
 
@@ -157,7 +159,7 @@ fun MailScreen(
         mailFollowed = mailUiState.mailFollowed,
         category = mailUiState.mailCategory,
         mailViewModel=mailViewModel,
-        modifier = Modifier.padding(20.dp)
+        modifier = Modifier.padding(20.dp).fillMaxSize()
     )
 }
 
@@ -169,7 +171,7 @@ fun TopRow(
 ){
     val buttonSize = 45.dp
     TopAppBar(
-        modifier=Modifier
+        modifier=modifier.padding(0.dp)
             .fillMaxWidth(),
         title={
             Text(
@@ -317,7 +319,7 @@ fun InfoRow(
     )
     {
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth(),//.padding(mediumPadding),
             //verticalArrangement = Arrangement.spacedBy(mediumPadding),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -355,7 +357,7 @@ fun ContentRow(
         text = content,
         style = typography.headlineMedium,
         modifier = Modifier
-            .padding(top=230.dp, bottom=40.dp)
+            .padding(top=250.dp, bottom=8.dp)
     )}
 
 
@@ -363,20 +365,15 @@ fun ContentRow(
 fun IARow(
     modifier:Modifier,
 ){
-    Box(modifier=Modifier
-        .fillMaxSize()
-        .padding(bottom=4.dp),
-        contentAlignment = Alignment.BottomCenter
-    )
-    {
         Row(
-            modifier = Modifier
-            .fillMaxWidth(),
-        horizontalArrangement=Arrangement.SpaceEvenly,
+            modifier = modifier
+            .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+       horizontalArrangement=Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
 ){
     Button(
-        modifier = Modifier
+        modifier = modifier.weight(1f)
                 ,
         onClick = { }
     ) {
@@ -389,7 +386,7 @@ fun IARow(
         )
     }
     Button(
-        modifier = Modifier
+        modifier = Modifier.weight(1f)
             ,
         onClick = { }
     ) {
@@ -402,7 +399,7 @@ fun IARow(
         )
     }
 }}
-}
+
 
 
     @Preview(showBackground = true)
